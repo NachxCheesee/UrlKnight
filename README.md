@@ -35,3 +35,14 @@ El programa asegura la integridad de los datos guardándolos automáticamente en
 
 ¿No tienes Python instalado? No hay problema. 
 Puedes descargar la última versión estable del **UrlKnight.exe** directamente desde la pestaña de [Releases/Actions] de este repositorio. Solo descarga, ejecuta y listo. ⚔️
+
+---
+
+### ⚠️ Nota sobre Windows SmartScreen
+
+Al ser un software de código abierto y no tener una firma digital pagada, Windows puede mostrar un aviso de **"Editor desconocido"**. 
+
+**Para ejecutarlo:** 1. Haz clic en **"Más información"**.
+2. Luego selecciona **"Ejecutar de todas formas"**. 
+
+Puedes revisar el código fuente en este repositorio si te genera cualquier dudas.
