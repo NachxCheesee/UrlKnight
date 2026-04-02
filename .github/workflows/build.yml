@@ -25,7 +25,7 @@ jobs:
 
     - name: 🔨 Compilar a ejecutable (.exe)
       run: |
-        pyinstaller --onefile --name UrlKnight main.py
+        pyinstaller --onefile --name UrlKnight main/main.py
 
     - name: 📤 Subir el archivo compilado
       uses: actions/upload-artifact@v4
