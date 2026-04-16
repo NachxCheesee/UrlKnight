@@ -55,6 +55,8 @@ class URLKnight(ctk.CTk):
 
         #Configuracion de ventana
         self.title("URL Knight")
+        # Forzamos que la app este en modo oscuro 
+        ctk.set_appearance_mode("dark")
         # self.minsize(ancho_minimo, alto_minimo)
         self.minsize(640,360)
         # Definimos el tamaño: "ANCHO x ALTO"
@@ -251,5 +253,6 @@ class URLKnight(ctk.CTk):
 
 
 if __name__ == "__main__":
+    logic.inicio()
     app = URLKnight() # Creamos la instancia de nuestra clase
     app.mainloop()    # Iniciamos el corazón de la app

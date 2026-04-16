@@ -21,6 +21,9 @@ import os
 # Para interactuar con el archivo JSON
 import json
 
+RUTA_DATOS = {}
+diccionario = {}
+
 def obtener_ruta_archivo():
 
     # guardamos en una variable en donde el usuario guarda sus registros de apps
@@ -63,6 +66,11 @@ def eliminarUrl(aliasEliminar):
 
     guardar_datos(RUTA_DATOS, diccionario)
 
+def inicio():
+    global RUTA_DATOS, diccionario
+    
+    RUTA_DATOS = obtener_ruta_archivo()
+    diccionario = cargar_datos(RUTA_DATOS)
 
-RUTA_DATOS = obtener_ruta_archivo()
-diccionario = cargar_datos(RUTA_DATOS)
+if __name__ == "__main__":
+    pass
