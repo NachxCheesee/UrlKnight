@@ -18,6 +18,20 @@ import customtkinter as ctk
 import logic
 # libreria para dar mensajes profesionales
 from CTkMessagebox import CTkMessagebox
+# Utilizado para obtener rutas temporales
+import sys
+import os
+# Necesario para encontrar la ruta de los assets
+def ruta_recurso(relative_path):
+    # Obtiene la ruta absoluta del recurso
+    try:
+        # PyInstaller crea una carpeta temporal y guarda la ruta en _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        # Si no estamos en un .exe, usamos la ruta normal
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
 
 # URLKnight hereda todo de ctk.CTk
 class URLKnight(ctk.CTk):
@@ -46,7 +60,8 @@ class URLKnight(ctk.CTk):
         # Definimos el tamaño: "ANCHO x ALTO"
         self.geometry(f"{ancho_app}x{alto_app}+{x}+{y}")
         # Imagen de icono
-        self.iconbitmap("assets/UrlKnight.ico")
+        ruta_icono = ruta_recurso("assets/UrlKnight.ico")
+        self.iconbitmap(ruta_icono)
 
         # ESTRUCTURA DE CELDAS (Grid)
         # Columna 0 (Menú) - No se estira

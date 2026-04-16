@@ -56,4 +56,4 @@ Al ser un software de código abierto y no tener una firma digital pagada, Windo
 **Para ejecutarlo:** 1. Haz clic en **"Más información"**.
 2. Luego selecciona **"Ejecutar de todas formas"**. 
 
-Puedes revisar el código fuente en este repositorio si te genera cualquier dudas.
+Puedes revisar el código fuente en este repositorio si te genera cualquier duda.
