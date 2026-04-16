@@ -1,5 +1,5 @@
 # UrlKnight ⚔️
-Un administrador de enlaces ligero con persistencia local para desarrolladores.
+Un administrador de enlaces ligero con persistencia local.
 ---
 <p align="left">
   <img src="https://img.shields.io/badge/Python-3.13.2-3776AB?style=for-the-badge&logo=python&logoColor=white" />
@@ -10,22 +10,33 @@ Un administrador de enlaces ligero con persistencia local para desarrolladores.
 ---
 ## 📝 Descripción
 
-UrlKnight es una herramienta de línea de comandos diseñada para gestionar accesos directos a URLs de forma eficiente. A diferencia de los marcadores tradicionales del navegador, esta aplicación permite centralizar enlaces de trabajo, estudio o herramientas frecuentes en un solo lugar.
+UrlKnight es una aplicación de escritorio con una interfaz gráfica moderna diseñada para gestionar accesos directos a URLs de forma eficiente. A diferencia de los marcadores tradicionales del navegador, esta aplicación permite centralizar enlaces de trabajo, estudio o herramientas frecuentes en un solo lugar.
 
-El programa asegura la integridad de los datos guardándolos automáticamente en la carpeta AppData del usuario en formato JSON, lo que garantiza que la información no se pierda al cerrar la aplicación o reiniciar el equipo.
+Desarrollada en Python con CustomTkinter, la herramienta garantiza la persistencia de los datos mediante el almacenamiento automático en formato JSON dentro de la carpeta AppData, asegurando que tus accesos estén siempre disponibles, incluso tras reiniciar el equipo.
+
+---
+
+<img src="assets/Captura.png" width="700">
 
 ---
 ## 🛠️ Tecnologías Utilizadas
 
 **Lenguaje**: Python 3.13.2
 
-**Módulos** de la librería estándar:
+**Librerias**:
 
 1. json: Para el almacenamiento y lectura de datos persistentes.
 
 2. os: Para la gestión de rutas dinámicas y creación de directorios en el sistema.
 
 3. webbrowser: Para la ejecución y apertura de enlaces en el navegador predeterminado.
+
+4. customtkinter: Para la interfaz grafica
+
+5. CTkMessagebox: Para ofrecer al usuario mensajes profesionales
+
+6. pyinstaller: Para la exportacion del proyecto
+
 --- 
 ## ⚙️ Requisitos
 

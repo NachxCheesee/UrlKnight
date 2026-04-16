@@ -24,11 +24,11 @@ jobs:
     - name: 📦 Instalar dependencias
       run: |
         python -m pip install --upgrade pip
-        pip install pyinstaller
+        pip install -r requirements.txt
 
     - name: 🔨 Compilar a ejecutable (.exe)
       run: |
-        pyinstaller --onefile --name UrlKnight main/main.py
+        pyinstaller --noconfirm --onefile --windowed --icon "assets/UrlKnight.ico" --add-data "assets;assets" --name "UrlKnight" src/main.py
 
     - name: 🚀 Crear Release en GitHub
       uses: softprops/action-gh-release@v2
