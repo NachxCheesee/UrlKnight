@@ -28,7 +28,7 @@ jobs:
 
     - name: 🔨 Compilar a ejecutable (.exe)
       run: |
-        pyinstaller --noconfirm --onefile --windowed --icon "assets/UrlKnight.ico" --add-data "assets;assets" --name "UrlKnight" src/main.py
+        pyinstaller --noconfirm --onefile --windowed --icon "assets/UrlKnight.ico" --add-data "assets;assets" --splash "assets/Carga.png" --name "UrlKnight" src/main.py
 
     - name: 🚀 Crear Release en GitHub
       uses: softprops/action-gh-release@v2
@@ -40,3 +40,5 @@ jobs:
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+        

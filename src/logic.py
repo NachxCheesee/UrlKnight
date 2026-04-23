@@ -21,10 +21,10 @@ import os
 # Para interactuar con el archivo JSON
 import json
 
-RUTA_DATOS = {}
+RUTA_DATOS = ""
 diccionario = {}
 
-def obtener_ruta_archivo():
+def obtenerRutaArchivo():
 
     # guardamos en una variable en donde el usuario guarda sus registros de apps
     appdata = os.getenv('APPDATA')
@@ -36,7 +36,7 @@ def obtener_ruta_archivo():
     # creamos la ruta final de archivos y la retornamos    
     return os.path.join(carpeta, 'urls.json')
 
-def cargar_datos(ruta):
+def cargarDatos(ruta):
     # Si aun no existe el archivo JSON damos un diccionario vacio para empezar de cero
     if not os.path.exists(ruta):
         return {}
@@ -48,29 +48,32 @@ def cargar_datos(ruta):
         # Si falla retornamos un diccionario vacio para empezar 
         return {}
 
-def guardar_datos(ruta, datos):
+def guardarDatos(ruta, datos):
     with open(ruta, 'w', encoding='utf-8') as f:
         # Abrimos el archivo con permiso de escritura
         json.dump(datos, f, indent=4, ensure_ascii=False)
     
+# --- FUNCIONES LLAMADAS DESDE MAIN ---
+
 def abrirUrl(alias):
      webbrowser.open(diccionario[alias])
         
-def añadirUrl(Alias, url):
-    diccionario[Alias] = url
-    guardar_datos(RUTA_DATOS, diccionario)
+def agregarUrl(alias, url):
+    diccionario[alias] = url
+    guardarDatos(RUTA_DATOS, diccionario)
 
 def eliminarUrl(aliasEliminar):
 
     del diccionario[aliasEliminar]
 
-    guardar_datos(RUTA_DATOS, diccionario)
+    guardarDatos(RUTA_DATOS, diccionario)
 
 def inicio():
     global RUTA_DATOS, diccionario
     
-    RUTA_DATOS = obtener_ruta_archivo()
-    diccionario = cargar_datos(RUTA_DATOS)
+    RUTA_DATOS = obtenerRutaArchivo()
+    diccionario = cargarDatos(RUTA_DATOS)
+
 
 if __name__ == "__main__":
     pass

@@ -21,8 +21,9 @@ from CTkMessagebox import CTkMessagebox
 # Utilizado para obtener rutas temporales
 import sys
 import os
+
 # Necesario para encontrar la ruta de los assets
-def ruta_recurso(relative_path):
+def rutaRecurso(relative_path):
     # Obtiene la ruta absoluta del recurso
     try:
         # PyInstaller crea una carpeta temporal y guarda la ruta en _MEIPASS
@@ -38,7 +39,7 @@ class URLKnight(ctk.CTk):
     def __init__(self):
         super().__init__() # Esto activa las funciones internas de CustomTkinter
 
-        # Obtenemos el ancho y alto real de TU pantalla actual
+        # Obtenemos el ancho y alto real de TU pantalla actual (Asi aseguramos que la ventana aparezca siempre con un tamaño especifico independiente de la pantalla )
         monitor_ancho = self.winfo_screenwidth()
         monitor_alto = self.winfo_screenheight()
 
@@ -50,19 +51,19 @@ class URLKnight(ctk.CTk):
         x = int((self.winfo_screenwidth() / 2) - (ancho_app / 2))
         y = int((self.winfo_screenheight() / 2) - (alto_app / 2))
 
-        # Para que aparezca un poco más arriba
+        # Para que la ventana aparezca un poco más arriba
         y = y - 80
 
-        #Configuracion de ventana
+        # --- CONFIGURACION DE VENTANA ---
         self.title("URL Knight")
         # Forzamos que la app este en modo oscuro 
         ctk.set_appearance_mode("dark")
-        # self.minsize(ancho_minimo, alto_minimo)
+        # ancho_minimo y alto_minimo de la ventana
         self.minsize(640,360)
         # Definimos el tamaño: "ANCHO x ALTO"
         self.geometry(f"{ancho_app}x{alto_app}+{x}+{y}")
         # Imagen de icono
-        ruta_icono = ruta_recurso("assets/UrlKnight.ico")
+        ruta_icono = rutaRecurso("assets/UrlKnight.ico")
         self.iconbitmap(ruta_icono)
 
         # ESTRUCTURA DE CELDAS (Grid)
@@ -75,8 +76,8 @@ class URLKnight(ctk.CTk):
 
         # CREACIÓN DE LOS CONTENEDORES
         self.contenedores()
-        self.setup_menu_widgets()
-        self.mostrar_pantalla_URLS()
+        self.configuracionMenu()
+        self.mostrarPantallaUrls()
 
     # --- CONFIGURACION CONTENEDORES --- 
 
@@ -88,171 +89,187 @@ class URLKnight(ctk.CTk):
         self.contenido = ctk.CTkFrame(self, fg_color="transparent")
         self.contenido.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
 
-    def limpiar_contenido(self):
+    def limpiarContenido(self):
         # Buscamos cada objeto en el frame contenido y lo sacamos
         for widget in self.contenido.winfo_children():
             widget.destroy()
 
     # --- CONFIGURACION MENU ---
 
-    def setup_menu_widgets(self):
+    def configuracionMenu(self):
 
         # padx lado a lado 
         # pady arriba y abajo
-        self.titulo = ctk.CTkLabel(self.menu_lateral, text="URL KNIGHT", font=("Arial", 20, "bold"))
-        self.titulo.pack(pady=30, padx=10)
+        self.tituloMenu = ctk.CTkLabel(self.menu_lateral, text="URL KNIGHT", font=("Arial", 20, "bold"))
+        self.tituloMenu.pack(pady=30, padx=10)
 
         # Botón 1:
-        self.btn_URLS = ctk.CTkButton(
+        self.btnUrlMenu = ctk.CTkButton(
             self.menu_lateral, 
-            text="Mostrar Urls", 
-            command=self.mostrar_pantalla_URLS
+            text="Mis rutas", 
+            command=self.mostrarPantallaUrls
         )
-        self.btn_URLS.pack(pady=10, padx=20, fill="x")
+        self.btnUrlMenu.pack(pady=10, padx=20, fill="x")
 
         # Botón 2: 
-        self.btn_agregar_Url = ctk.CTkButton(
+        self.btnAgregarMenu = ctk.CTkButton(
             self.menu_lateral, 
-            text="Agregar Url", 
-            command=self.mostrar_pantalla_agregar_url
+            text="Añadir Url", 
+            command=self.mostrarPantallaAgregarUrl
         )
-        self.btn_agregar_Url.pack(pady=10, padx=20, fill="x")
+        self.btnAgregarMenu.pack(pady=10, padx=20, fill="x")
 
         # Botón 3: 
-        self.btn_eliminar_Url = ctk.CTkButton(
+        self.btnEliminarMenu = ctk.CTkButton(
             self.menu_lateral, 
             text="Eliminar Url", 
-            command=self.mostrar_pantalla_eliminar_url
+            command=self.mostrarPantallaEliminarUrl
         )
-        self.btn_eliminar_Url.pack(pady=10, padx=20, fill="x")
+        self.btnEliminarMenu.pack(pady=10, padx=20, fill="x")
 
 
-    # --- CONFIGURACION PANTALLAS ---
+    # --- CONFIGURACION PANTALLAS EN CONTENIDO ---
 
-    def mostrar_pantalla_URLS(self):
+    def mostrarPantallaUrls(self):
 
-        self.limpiar_contenido() # Borramos lo que haya
+        self.limpiarContenido() # Borramos lo que haya
         
         # Dibujamos la pantalla
-        self.label_titulo = ctk.CTkLabel(self.contenido, text="⚔️ ELIGE TU DESTINO", font=("Arial", 24, "bold"))
-        self.label_titulo.pack(pady=20)
+        self.tituloUrls = ctk.CTkLabel(self.contenido, text="⚔️ ELIGE TU DESTINO ⚔️", font=("Arial", 24, "bold"))
+        self.tituloUrls.pack(pady=20)
 
         # Creamos la caja con scroll
         # Le damos un ancho y un alto relativo al contenedor
-        self.scroll = ctk.CTkScrollableFrame(
+        self.scrollUrls = ctk.CTkScrollableFrame(
             self.contenido, 
             width=500, 
             height=300, 
             label_text=" "
         )
-        self.scroll.pack(pady=10, fill="both", expand=True)
+        self.scrollUrls.pack(pady=10, fill="both", expand=True)
 
+        # Revisamos al informacion del json y la agregamos como botones al scroll
         for alias, url in logic.diccionario.items():
-            btn = ctk.CTkButton(self.scroll, text=alias, command=lambda n=alias: self.click_boton(n), width=400)
+            btn = ctk.CTkButton(self.scrollUrls, text=alias, command=lambda n=alias: self.clickBoton(n), width=400)
             btn.pack(pady=10, padx=15, fill = "x")
 
-    def mostrar_pantalla_agregar_url(self):
-        self.limpiar_contenido() # Borramos lo que haya
+    def mostrarPantallaAgregarUrl(self):
+        self.limpiarContenido() # Borramos lo que haya
         
-        self.label_titulo = ctk.CTkLabel(self.contenido, text="📜 AGREGAR URL", font=("Arial", 24, "bold"))
-        self.label_titulo.pack(pady=20)
+        self.tituloAgregar = ctk.CTkLabel(self.contenido, text="📜 AÑADIR URL 🛡️", font=("Arial", 24, "bold"))
+        self.tituloAgregar.pack(pady=20)
 
 
-        self.entrada_alias = ctk.CTkEntry(self.contenido, placeholder_text="Ingresa tu alias aqui...", width=400)
-        self.entrada_alias.pack(pady=10)
+        self.entradaAliasAgregar = ctk.CTkEntry(self.contenido, placeholder_text="Ingresa tu alias aqui...", width=400)
+        self.entradaAliasAgregar.pack(pady=10)
 
-        self.entrada_url = ctk.CTkEntry(self.contenido, placeholder_text="Ingresa tu url aqui...", width=400)
-        self.entrada_url.pack(pady=10)
+        self.entradaUrlAgregar = ctk.CTkEntry(self.contenido, placeholder_text="Ingresa tu url aqui...", width=400)
+        self.entradaUrlAgregar.pack(pady=10)
 
-        self.btn_agregar_Url = ctk.CTkButton(
+        self.btnAgregarUrlAgregar = ctk.CTkButton(
             self.contenido, 
             text="Agregar Url",
             width=200,
-            command=self.agregar_url
+            command=self.agregarUrl
         )
-        self.btn_agregar_Url.pack(pady=10, padx=20)
+        self.btnAgregarUrlAgregar.pack(pady=10, padx=20)
 
-    def mostrar_pantalla_eliminar_url(self):
-        self.limpiar_contenido() # Borramos lo que haya
+    def mostrarPantallaEliminarUrl(self):
+        self.limpiarContenido() # Borramos lo que haya
         
-        self.label_titulo = ctk.CTkLabel(self.contenido, text="📜 ELIMINAR URL", font=("Arial", 24, "bold"))
-        self.label_titulo.pack(pady=20)
+        self.tituloEliminar = ctk.CTkLabel(self.contenido, text="❌ ELIMINAR URL ❌", font=("Arial", 24, "bold"))
+        self.tituloEliminar.pack(pady=20)
 
 
-        self.entrada_alias = ctk.CTkEntry(self.contenido, placeholder_text="Ingresa tu alias aqui...", width=400)
-        self.entrada_alias.pack(pady=10)
+        self.entradaAliasEliminar = ctk.CTkEntry(self.contenido, placeholder_text="Ingresa tu alias aqui...", width=400)
+        self.entradaAliasEliminar.pack(pady=10)
 
-        self.btn_eliminar_Url = ctk.CTkButton(
+        self.btnEliminarUrlEliminar = ctk.CTkButton(
             self.contenido, 
             text="Eliminar Url",
             width=200,
-            command=self.eliminar_url
+            command=self.eliminarUrl
         )
-        self.btn_eliminar_Url.pack(pady=10, padx=20)
+        self.btnEliminarUrlEliminar.pack(pady=10, padx=20)
 
     # --- FUNCIONES DE LOS BOTONES ---
 
-    def click_boton(self, nombre):
+    def clickBoton(self, nombre):
         
         logic.abrirUrl(nombre)
 
-    def agregar_url(self):
-        alias = self.entrada_alias.get()
-        url = self.entrada_url.get()
-
-        if not alias.strip() or not url.strip():
-            self.mostrar_campos_obligatorios()
-        elif alias in logic.diccionario:
-            self.mostrar_alias_existe()
-        elif not url.startswith(("http://", "https://")):
-            self.mostrar_url_invalida()
-        else:
-            self.mostrar_guardado_exitoso()
-            logic.añadirUrl(alias, url)
+    def agregarUrl(self):
+        alias = self.entradaAliasAgregar.get()
+        url = self.entradaUrlAgregar.get()
         
-        self.entrada_alias.delete(0, 'end')
-        self.entrada_url.delete(0, 'end')
-
-
-    def eliminar_url(self):
-        alias = self.entrada_alias.get()
-
-        if not alias.strip():
-            self.mostrar_campos_obligatorios()
+        # Realizamos las verificaciones antes de llamar a logic
+        if not alias.strip() or not url.strip():
+            self.mostrarCamposObligatorios()
+        elif alias in logic.diccionario:
+            self.mostrarAliasExiste()
+        elif alias.startswith(("http://", "https://")):
+            self.mostrarAliasInvalido()
+        elif not url.startswith(("http://", "https://")):
+            self.mostrarUrlInvalida()
         else:
-            if alias in logic.diccionario:
-                logic.eliminarUrl(alias)
-                self.mostrar_borrado_exitoso()
+            self.mostrarGuardadoExitoso()
+            logic.agregarUrl(alias, url)
+        
+        # Limpiamos los campos de texto
+        self.entradaAliasAgregar.delete(0, 'end')
+        self.entradaUrlAgregar.delete(0, 'end')
 
-            else:
-                self.mostrar_alias_not_Found()
+
+    def eliminarUrl(self):
+        alias = self.entradaAliasEliminar.get()
+
+        # Realizamos las verificaciones antes de llamar a logic
+        if not alias.strip():
+            self.mostrarCamposObligatorios()
+        elif alias in logic.diccionario:
+            logic.eliminarUrl(alias)
+            self.mostrarBorradoExitoso()
+        else:
+            self.mostrarAliasNotFound()
 
 
-        self.entrada_alias.delete(0, 'end')
+        self.entradaAliasEliminar.delete(0, 'end')
 
     # --- MENSAJES DE WINDOWS ---
 
-    def mostrar_guardado_exitoso(self):
+    def mostrarAliasInvalido(self):
+        CTkMessagebox(title="Error", message="¡Alias invalido! Asegúrate de que NO empiece con http:// o https://", icon="cancel")
+
+    def mostrarGuardadoExitoso(self):
         CTkMessagebox(title="Éxito", message="¡URL guardada correctamente!", icon="check")
 
-    def mostrar_url_invalida(self):
-        CTkMessagebox(title="Error", message="¡Url invalida! Asegúrate de que empiece con http:// o https://", icon="cancel")
+    def mostrarUrlInvalida(self):
+        CTkMessagebox(title="Error", message="¡Url invalido! Asegúrate de que empiece con http:// o https://", icon="cancel")
     
-    def mostrar_borrado_exitoso(self):
+    def mostrarBorradoExitoso(self):
         CTkMessagebox(title="Éxito", message="¡URL borrada correctamente!", icon="check")
 
-    def mostrar_campos_obligatorios(self):
+    def mostrarCamposObligatorios(self):
 
-        CTkMessagebox(title="Atención", message="¡Todos los campos son obligatorios!", icon="warning")
+        CTkMessagebox(title="Error", message="¡Todos los campos son obligatorios!", icon="cancel")
 
-    def mostrar_alias_not_Found(self):
+    def mostrarAliasNotFound(self):
         CTkMessagebox(title="Error", message="¡Alias no encontrado!", icon="cancel")
     
-    def mostrar_alias_existe(self):
+    def mostrarAliasExiste(self):
         CTkMessagebox(title="Error", message="¡Ya existe un Alias con ese nombre!", icon="cancel")
 
 
 if __name__ == "__main__":
-    logic.inicio()
+
+    logic.inicio() # llamamos a logic para que cree el archivo de guardado json
+
+    # 🛡️ Cierre de la Splash Screen
+    try:
+        import pyi_splash # type: ignore
+        pyi_splash.close()
+    except ImportError:
+        pass
+
     app = URLKnight() # Creamos la instancia de nuestra clase
     app.mainloop()    # Iniciamos el corazón de la app
