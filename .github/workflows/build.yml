@@ -37,9 +37,7 @@ jobs:
         New-Item -Path "dist\UrlKnight" -ItemType Directory
         # Movemos el exe dentro
         Move-Item -Path "dist\UrlKnight.exe" -Destination "dist\UrlKnight\"
-        # Opcional: Crear un archivo de instrucciones rápido dentro
-        "🛡️ Guía del Caballero Nómada`n`nMantén el .exe y el .json siempre en esta misma carpeta para no perder tus links." | Out-File -FilePath "dist\UrlKnight\INSTRUCCIONES.txt" -Encoding utf8
-
+        
     - name: 🤐 Comprimir en ZIP
       shell: pwsh
       run: |
