@@ -127,6 +127,12 @@ class URLKnight(ctk.CTk):
         )
         self.btnEliminarMenu.pack(pady=10, padx=20, fill="x")
 
+        self.btnPortabilidadMenu = ctk.CTkButton(
+            self.menu_lateral, 
+            text="Guia de Portabilidad", 
+            command=self.mostrarPantallaGuiaPortabilidad
+        )
+        self.btnPortabilidadMenu.pack(pady=10, padx=20, fill="x")
 
     # --- CONFIGURACION PANTALLAS EN CONTENIDO ---
 
@@ -143,8 +149,7 @@ class URLKnight(ctk.CTk):
         self.scrollUrls = ctk.CTkScrollableFrame(
             self.contenido, 
             width=500, 
-            height=300, 
-            label_text=" "
+            height=300
         )
         self.scrollUrls.pack(pady=10, fill="both", expand=True)
 
@@ -152,6 +157,11 @@ class URLKnight(ctk.CTk):
         for alias, url in logic.diccionario.items():
             btn = ctk.CTkButton(self.scrollUrls, text=alias, command=lambda n=alias: self.clickBoton(n), width=400)
             btn.pack(pady=10, padx=15, fill = "x")
+
+        # Si el usuario no tiene nada guardado mostramos el siguiente mensaje
+        if len(logic.diccionario) == 0:
+            self.noHayNadaUrls = ctk.CTkLabel(self.scrollUrls, text="⚔️ ¡No tienes ninguna Url guardada! ⚔️", font=("Arial", 12, "bold"))
+            self.noHayNadaUrls.pack(pady=20)
 
     def mostrarPantallaAgregarUrl(self):
         self.limpiarContenido() # Borramos lo que haya
@@ -191,6 +201,59 @@ class URLKnight(ctk.CTk):
             command=self.eliminarUrl
         )
         self.btnEliminarUrlEliminar.pack(pady=10, padx=20)
+
+    def mostrarPantallaGuiaPortabilidad(self):
+        self.limpiarContenido() # Borramos lo que haya
+        
+        self.tituloGuia = ctk.CTkLabel(self.contenido, text="📜 GUIA DE PORTABILIDAD 📜", font=("Arial", 24, "bold"))
+        self.tituloGuia.pack(pady=20)
+
+        # 1. Creamos el CTkTextbox
+        # wrap="word" es para que el texto no se corte a la mitad de una palabra
+        self.textoGuia = ctk.CTkTextbox(
+            self.contenido, 
+            font=("Segoe UI", 14),
+            wrap="word",
+            border_width=2,
+            fg_color="#2b2b2b",
+            text_color="#dce4ee"
+        )
+        
+        # 'fill="both"' y 'expand=True' hacen que el cuadro crezca con la ventana
+        self.textoGuia.pack(padx=10, pady=10, fill="both", expand=True)
+
+        # 2. El contenido de tu guía
+        contenidoGuia = (
+            "Guía del Caballero Nómada: Cómo llevar tu información a todos lados\n\n"
+            "¡Felicidades! Tienes en tus manos una herramienta diseñada para la libertad. "
+            "UrlKnight no necesita instalación, pero para que tus datos viajen seguros contigo, "
+            "sigue estas reglas de honor:\n\n"
+            "1. EL COFRE DEL TESORO (LA CARPETA)\n"
+            "Aunque el programa es un solo archivo .exe, este genera su propia \"bóveda\" "
+            "de datos llamada UrlKnightData.json. Regla de Oro: Mantén siempre el archivo .exe "
+            "y el .json en la misma carpeta.\n\n"
+            "2. CÓMO MOVER TUS DATOS A UN PENDRIVE \n"
+            "Si vas a usar el Knight en la universidad o en el trabajo:\n"
+            "- Copia la carpeta completa de UrlKnight a tu pendrive.\n"
+            "- Al llegar al otro PC, abre la carpeta y ejecuta el UrlKnight.exe.\n"
+            "- ¡Listo! Verás todos tus links tal cual los dejaste en casa.\n\n"
+            "3. PREGUNTAS FRECUENTES DEL VIAJERO \n\n"
+            "* ¿Puedo crear un acceso directo?\n"
+            "Sí, pero hazlo desde el pendrive. No muevas el .exe solo al escritorio del otro PC "
+            "o no encontrará tus links.\n\n"
+            "* ¿Perdí mis links?\n"
+            "Revisa que el archivo UrlKnightData.json esté al lado del programa. Si lo borras, "
+            "el Knight empezará de cero.\n\n"
+            "* ¿Cómo hago un respaldo?\n"
+            "Solo haz una copia del archivo UrlKnightData.json en tu correo o nube. "
+            "¡Ahí está toda tu configuración!"
+        )
+
+        # 3. Insertamos el texto
+        self.textoGuia.insert("0.0", contenidoGuia)
+
+        # 4. IMPORTANTE: Hacemos que sea de solo lectura para el usuario
+        self.textoGuia.configure(state="disabled")
 
     # --- FUNCIONES DE LOS BOTONES ---
 

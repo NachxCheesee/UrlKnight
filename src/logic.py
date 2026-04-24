@@ -20,21 +20,23 @@ import webbrowser
 import os
 # Para interactuar con el archivo JSON
 import json
+# Necesario para detectar la ruta del .exe
+import sys 
 
 RUTA_DATOS = ""
 diccionario = {}
 
 def obtenerRutaArchivo():
-
-    # guardamos en una variable en donde el usuario guarda sus registros de apps
-    appdata = os.getenv('APPDATA')
-    # vemos con la ruta de appdata en donde esta la carpeta de la app
-    carpeta = os.path.join(appdata, 'UrlKnight')
-    # si no existe esta carpeta la creamos
-    if not os.path.exists(carpeta):
-        os.makedirs(carpeta)
-    # creamos la ruta final de archivos y la retornamos    
-    return os.path.join(carpeta, 'urls.json')
+    # Detectamos si el código corre como .exe (PyInstaller) o como .py
+    if getattr(sys, 'frozen', False):
+        # Si es el ejecutable, la carpeta base es donde está el .exe
+        ruta_base = os.path.dirname(sys.executable)
+    else:
+        # Si es desarrollo, la carpeta base es donde está el script
+        ruta_base = os.path.dirname(os.path.abspath(__file__))
+    
+    # Retornamos la ruta del JSON al lado del ejecutable
+    return os.path.join(ruta_base, 'UrlKnightData.json')
 
 def cargarDatos(ruta):
     # Si aun no existe el archivo JSON damos un diccionario vacio para empezar de cero
@@ -68,10 +70,16 @@ def eliminarUrl(aliasEliminar):
 
     guardarDatos(RUTA_DATOS, diccionario)
 
+# Al momento de abrir la app se ejecuta el siguiente codigo automaticamente
 def inicio():
+    # Tomamos las rutas globales del archivo
     global RUTA_DATOS, diccionario
-    
+    # Obtenemos la ruta del archivo
     RUTA_DATOS = obtenerRutaArchivo()
+    # Si no existe creamos el archivo automaticamente sin nada {}
+    if not os.path.exists(RUTA_DATOS):
+        guardarDatos(RUTA_DATOS, {})
+    # Cargamos los datos
     diccionario = cargarDatos(RUTA_DATOS)
 
 

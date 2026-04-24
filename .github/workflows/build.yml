@@ -1,4 +1,4 @@
-name: 🚀 Release UrlKnight Exe
+name: Release UrlKnight Exe
 
 on:
   push:
@@ -30,15 +30,28 @@ jobs:
       run: |
         pyinstaller --noconfirm --onefile --windowed --icon "assets/UrlKnight.ico" --add-data "assets;assets" --splash "assets/Carga.png" --name "UrlKnight" src/main.py
 
+    - name: 📂 Preparar Carpeta de Distribución
+      shell: pwsh
+      run: |
+        # Creamos la carpeta que verá el usuario
+        New-Item -Path "dist\UrlKnight" -ItemType Directory
+        # Movemos el exe dentro
+        Move-Item -Path "dist\UrlKnight.exe" -Destination "dist\UrlKnight\"
+        # Opcional: Crear un archivo de instrucciones rápido dentro
+        "🛡️ Guía del Caballero Nómada`n`nMantén el .exe y el .json siempre en esta misma carpeta para no perder tus links." | Out-File -FilePath "dist\UrlKnight\INSTRUCCIONES.txt" -Encoding utf8
+
+    - name: 🤐 Comprimir en ZIP
+      shell: pwsh
+      run: |
+        Compress-Archive -Path "dist\UrlKnight" -DestinationPath "dist\UrlKnight_v${{ github.ref_name }}.zip"
+
     - name: 🚀 Crear Release en GitHub
       uses: softprops/action-gh-release@v2
       with:
-        files: dist/UrlKnight.exe
+        files: dist/UrlKnight_v${{ github.ref_name }}.zip
         name: Release ${{ github.ref_name }}
         tag_name: ${{ github.ref }}
         draft: false
         prerelease: false
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-        
