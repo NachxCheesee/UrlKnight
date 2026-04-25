@@ -1,5 +1,5 @@
 # UrlKnight ⚔️
-Un administrador de enlaces ligero con persistencia local.
+Un administrador de URLs ligero, portable y diseñado para la productividad sin instalaciones.
 ---
 <p align="left">
   <img src="https://img.shields.io/badge/Python-3.13.2-3776AB?style=for-the-badge&logo=python&logoColor=white" />
@@ -8,44 +8,54 @@ Un administrador de enlaces ligero con persistencia local.
 </p>
 
 ---
+
 ## 📝 Descripción
 
-UrlKnight es una aplicación de escritorio con una interfaz gráfica moderna diseñada para gestionar accesos directos a URLs de forma eficiente. A diferencia de los marcadores tradicionales del navegador, esta aplicación permite centralizar enlaces de trabajo, estudio o herramientas frecuentes en un solo lugar.
+**UrlKnight** es una aplicación de escritorio diseñada para centralizar tus accesos directos de forma eficiente. A diferencia de los marcadores tradicionales, este caballero está pensado para la **movilidad**: puedes llevarlo en un pendrive y usarlo en cualquier estación de trabajo (universidad, oficina o casa) sin dejar rastro en el sistema operativo local.
 
-Desarrollada en Python con CustomTkinter, la herramienta garantiza la persistencia de los datos mediante el almacenamiento automático en formato JSON dentro de la misma carpeta de la aplicación, asegurando que tus accesos estén siempre disponibles, incluso tras reiniciar el equipo.
+Desarrollada con **CustomTkinter**, garantiza una interfaz moderna y una persistencia de datos inteligente que acompaña siempre al ejecutable.
 
 ---
 
 <img src="assets/Captura.png" width="700">
 
 ---
+
+## 🚀 Características Principales
+
+* **🛡️ Portabilidad Total:** Olvídate de carpetas ocultas en `%AppData%`. El Knight guarda sus datos exactamente donde tú lo pongas.
+* **💾 Persistencia Automática:** Gestión de archivos JSON dinámica mediante `sys.executable`, asegurando que tus links viajen contigo.
+* **⚡ Experiencia Profesional:** Splash Screen de carga y mensajes de sistema estilizados con `CTkMessagebox`.
+* **📖 Guía Integrada:** Incluye un manual de usuario dentro de la app para asegurar el correcto manejo de la "Bóveda de Datos".
+
+---
+
 ## 🛠️ Tecnologías Utilizadas
 
-**Lenguaje**: Python 3.13.2
-
-**Librerias**:
-
-1. json: Para el almacenamiento y lectura de datos persistentes.
-
-2. os: Para la gestión de rutas dinámicas y creación de directorios en el sistema.
-
-3. webbrowser: Para la ejecución y apertura de enlaces en el navegador predeterminado.
-
-4. customtkinter: Para la interfaz grafica
-
-5. CTkMessagebox: Para ofrecer al usuario mensajes profesionales
-
-6. pyinstaller: Para la exportacion del proyecto
+* **Lenguaje:** [Python 3.13.2](https://www.python.org/)
+* **GUI:** [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) (Interfaz moderna y responsive).
+* **Gestión de Datos:** Librería `json` para persistencia local.
+* **Arquitectura de Rutas:** `sys` y `os` para garantizar la independencia de la unidad de almacenamiento.
+* **Navegación:** `webbrowser` para integración directa con el navegador predeterminado.
+* **Distribución:** `PyInstaller` para empaquetado en un ejecutable único.
 
 --- 
-## ⚙️ Requisitos
 
-- Sistema operativo Windows (recomendado para la ruta automática de AppData).
+## 🛡️ Guía de Portabilidad
 
-## 📦 Descargas (Versión Ejecutable)
+Para que tus datos estén siempre seguros, recuerda estas reglas:
+1. **La Bóveda:** El archivo `UrlKnightData.json` es la memoria de la app. Debe estar siempre en la **misma carpeta** que `UrlKnight.exe`.
+2. **El Viaje:** Si cambias de PC, mueve la **carpeta completa**.
+3. **Respaldo:** Puedes copiar el archivo `.json` a tu nube favorita para tener un backup instantáneo de todos tus enlaces.
 
-¿No tienes Python instalado? No hay problema. 
-Puedes descargar la última versión estable del **UrlKnight.exe** directamente desde la pestaña de [Releases/Actions] de este repositorio. Solo descarga el ZIP, descomprime, ejecuta y listo. ⚔️
+---
+
+## 📦 Descarga y Ejecución
+
+¿No tienes Python? No lo necesitas.
+1. Ve a la sección de **[Releases]** de este repositorio.
+2. Descarga el archivo `.zip` con la última versión.
+3. Descomprime y ejecuta `UrlKnight.exe`. ¡Eso es todo!
 
 ---
 

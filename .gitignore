@@ -2,3 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Ignorar archivos de datos local
+src/UrlKnightData.json

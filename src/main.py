@@ -222,7 +222,7 @@ class URLKnight(ctk.CTk):
         # 'fill="both"' y 'expand=True' hacen que el cuadro crezca con la ventana
         self.textoGuia.pack(padx=10, pady=10, fill="both", expand=True)
 
-        # 2. El contenido de tu guía
+        # El contenido de tu guía
         contenidoGuia = (
             "Guía del Caballero Nómada: Cómo llevar tu información a todos lados\n\n"
             "¡Felicidades! Tienes en tus manos una herramienta diseñada para la libertad. "
@@ -249,10 +249,10 @@ class URLKnight(ctk.CTk):
             "¡Ahí está toda tu configuración!"
         )
 
-        # 3. Insertamos el texto
+        # Insertamos el texto
         self.textoGuia.insert("0.0", contenidoGuia)
 
-        # 4. IMPORTANTE: Hacemos que sea de solo lectura para el usuario
+        # Hacemos que sea de solo lectura para el usuario
         self.textoGuia.configure(state="disabled")
 
     # --- FUNCIONES DE LOS BOTONES ---
@@ -327,7 +327,7 @@ if __name__ == "__main__":
 
     logic.inicio() # llamamos a logic para que cree el archivo de guardado json
 
-    # 🛡️ Cierre de la Splash Screen
+    # Cierre de la Splash Screen
     try:
         import pyi_splash # type: ignore
         pyi_splash.close()
