@@ -43,7 +43,7 @@ def cargarDatos(ruta):
     if not os.path.exists(ruta):
         return {}
     try:
-        # Abrimos el archivo con permiso de lectura en donde transformamos la informacion en un diccionario que python pueda leer 
+        # Abrimos el archivo con permiso de lectura en donde transformamos la informacion en un diccionario que python pueda leer
         with open(ruta, 'r', encoding='utf-8') as f:
             return json.load(f)
     except:

@@ -39,7 +39,7 @@ class URLKnight(ctk.CTk):
     def __init__(self):
         super().__init__() # Esto activa las funciones internas de CustomTkinter
 
-        # Obtenemos el ancho y alto real de TU pantalla actual (Asi aseguramos que la ventana aparezca siempre con un tamaño especifico independiente de la pantalla )
+        # Obtenemos el ancho y alto real de TU pantalla actual (Asi aseguramos que la ventana aparezca siempre con un tamaño especifico independiente de la pantalla del monitor)
         monitor_ancho = self.winfo_screenwidth()
         monitor_alto = self.winfo_screenheight()
 
@@ -254,6 +254,7 @@ class URLKnight(ctk.CTk):
 
         # Hacemos que sea de solo lectura para el usuario
         self.textoGuia.configure(state="disabled")
+
 
     # --- FUNCIONES DE LOS BOTONES ---
 
