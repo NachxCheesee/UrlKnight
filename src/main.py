@@ -77,6 +77,10 @@ class URLKnight(ctk.CTk):
         # CREACIÓN DE LOS CONTENEDORES
         self.contenedores()
         self.configuracionMenu()
+
+        # Creamos las listas a utilizar para la Selección Múltiple
+        self.listaRutasSeleccionadas = []
+        self.botonesRutas = {}
         self.mostrarPantallaUrls()
 
     # --- CONFIGURACION CONTENEDORES --- 
@@ -149,7 +153,7 @@ class URLKnight(ctk.CTk):
         self.scrollUrls = ctk.CTkScrollableFrame(
             self.contenido, 
             width=500, 
-            height=300
+            height=250
         )
         self.scrollUrls.pack(pady=10, fill="both", expand=True)
 
@@ -157,11 +161,50 @@ class URLKnight(ctk.CTk):
         for alias, url in logic.diccionario.items():
             btn = ctk.CTkButton(self.scrollUrls, text=alias, command=lambda n=alias: self.clickBoton(n), width=400)
             btn.pack(pady=10, padx=15, fill = "x")
+            self.botonesRutas[alias] = btn
 
         # Si el usuario no tiene nada guardado mostramos el siguiente mensaje
         if len(logic.diccionario) == 0:
             self.noHayNadaUrls = ctk.CTkLabel(self.scrollUrls, text="⚔️ ¡No tienes ninguna Url guardada! ⚔️", font=("Arial", 12, "bold"))
-            self.noHayNadaUrls.pack(pady=20)
+            self.noHayNadaUrls.pack(pady=10)
+
+        # El contenedor base invisible PARA EL SCROLL HORIZONTAL
+        self.contenedorOculto = ctk.CTkFrame(
+            self.contenido,
+            height=60,
+            fg_color="transparent" # Lo hace invisible en el fondo de la app
+        )
+        self.contenedorOculto.pack(pady=5, fill="x")
+        self.contenedorOculto.pack_propagate(False) # Forzamos que mantenga su tamaño siempre
+
+        # El scroll horizontal (Nace oculto dentro del contenedor base)
+        self.scrollHorizontalUrl = ctk.CTkScrollableFrame(
+            self.contenedorOculto, 
+            orientation="horizontal",
+            fg_color="#2b2b2b" # El color gris de barra de herramientas
+        )
+
+        # 3. El Switch detonante (Se empaqueta abajo a la izquierda)
+        self.switchMultipleUrl = ctk.CTkSwitch(
+            self.contenido, 
+            text="Seleccion multiple",
+            font=("Arial", 14),
+            progress_color="#b58d3d",
+            command=self.alternarModoMultiple
+        )
+        self.switchMultipleUrl.pack(side="left", padx=(20, 10), pady=15)
+
+
+        # Botón de lanzar (se acoplará AL LADO del switch abajo)
+        self.btnLanzarMultiple = ctk.CTkButton(
+            self.contenido, # Su padre es self.contenido para ponerse al lado del switch
+            text="Lanzar rutas seleccionadas 🚀",
+            font=("Arial", 14, "bold"),
+            fg_color="#2c6e49",
+            hover_color="#4f9a69",
+            command=self.lanzarUrlsMultiples
+        )
+
 
     def mostrarPantallaAgregarUrl(self):
         self.limpiarContenido() # Borramos lo que haya
@@ -258,9 +301,76 @@ class URLKnight(ctk.CTk):
 
     # --- FUNCIONES DE LOS BOTONES ---
 
-    def clickBoton(self, nombre):
+    def alternarModoMultiple(self):
+        if self.switchMultipleUrl.get() == 1:
+            # Mostramos la barra gris que rellena el espacio fantasma
+            self.scrollHorizontalUrl.pack(fill="both", expand=True)
+            # Hacemos aparecer el botón verde inmediatamente a la derecha del switch
+            self.btnLanzarMultiple.pack(side="left", padx=10, pady=15)
+        else:
+            # Al apagar, el botón verde y la barra se ocultan
+            self.scrollHorizontalUrl.pack_forget()
+            self.btnLanzarMultiple.pack_forget()
+            
+            # Destruimos todos los botones dinámicos que hayan quedado dentro del scroll horizontal
+            for widget in self.scrollHorizontalUrl.winfo_children():
+                widget.destroy()
+
+            # Limpiamos la ráfaga lógica y restauramos los colores de los botones de arriba
+            self.listaRutasSeleccionadas.clear()
+            for btn in self.botonesRutas.values():
+                btn.configure(fg_color=ctk.ThemeManager.theme["CTkButton"]["fg_color"])
+
+    def lanzarUrlsMultiples(self):
+        if not self.listaRutasSeleccionadas:
+            CTkMessagebox(title="Aviso", message="¡No has seleccionado ninguna ruta, caballero!", icon="warning")
+            return
         
-        logic.abrirUrl(nombre)
+        # Abre todas las URLs seleccionadas en un bucle
+        for alias in self.listaRutasSeleccionadas:
+            logic.abrirUrl(alias)
+            
+        # Apaga el modo automáticamente al terminar el lanzamiento
+        self.switchMultipleUrl.deselect()
+        self.alternarModoMultiple()
+
+    def quitarRutaEspecifica(self, boton_badge, alias):
+        # 1. LOGICA: Sacamos solo UNA instancia de ese alias de la lista
+        if alias in self.listaRutasSeleccionadas:
+            self.listaRutasSeleccionadas.remove(alias)
+            
+        # 2. DINÁMICO: Destruimos físicamente ese botón de la barra horizontal
+        boton_badge.destroy()
+        
+        # 3. DISEÑO: Si ya no quedan más copias de ese alias en la lista, devolvemos el botón de arriba a su color normal
+        if alias not in self.listaRutasSeleccionadas:
+            self.botonesRutas[alias].configure(fg_color=ctk.ThemeManager.theme["CTkButton"]["fg_color"])
+
+
+    def clickBoton(self, nombre):
+        if self.switchMultipleUrl.get() == 1:
+            # LOGICA: Permite duplicados agregando directo a la lista
+            self.listaRutasSeleccionadas.append(nombre)
+            
+            # DISEÑO: Cambia el botón a color dorado de selección
+            self.botonesRutas[nombre].configure(fg_color="#b58d3d")
+            
+            # DINÁMICO: Crea la insignia en el scroll horizontal
+            btn_badge = ctk.CTkButton(
+                self.scrollHorizontalUrl,
+                text=f" 🔗 {nombre}  ✕ ",
+                font=("Arial", 12, "bold"),
+                fg_color="#3a3a3a",
+                hover_color="#551a1a",
+                width=80,
+                height=25,
+                corner_radius=6
+            )
+            btn_badge.configure(command=lambda b=btn_badge, a=nombre: self.quitarRutaEspecifica(b, a))
+            btn_badge.pack(side="left", padx=5, pady=10)
+        else:
+            # Abrimos la Url de manera normal
+            logic.abrirUrl(nombre)
 
     def agregarUrl(self):
         alias = self.entradaAliasAgregar.get()
