@@ -59,7 +59,7 @@ class URLKnight(ctk.CTk):
         # Forzamos que la app este en modo oscuro 
         ctk.set_appearance_mode("dark")
         # ancho_minimo y alto_minimo de la ventana
-        self.minsize(640,360)
+        self.minsize(640,450)
         # Definimos el tamaño: "ANCHO x ALTO"
         self.geometry(f"{ancho_app}x{alto_app}+{x}+{y}")
         # Imagen de icono
@@ -94,6 +94,8 @@ class URLKnight(ctk.CTk):
         self.contenido.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
 
     def limpiarContenido(self):
+        # Nos aseguramos que la lista siempre este vacia de inicio 
+        self.listaRutasSeleccionadas.clear()
         # Buscamos cada objeto en el frame contenido y lo sacamos
         for widget in self.contenido.winfo_children():
             widget.destroy()
@@ -141,63 +143,54 @@ class URLKnight(ctk.CTk):
     # --- CONFIGURACION PANTALLAS EN CONTENIDO ---
 
     def mostrarPantallaUrls(self):
-
-        self.limpiarContenido() # Borramos lo que haya
+        self.limpiarContenido()
         
-        # Dibujamos la pantalla
         self.tituloUrls = ctk.CTkLabel(self.contenido, text="⚔️ ELIGE TU DESTINO ⚔️", font=("Arial", 24, "bold"))
-        self.tituloUrls.pack(pady=20)
+        self.tituloUrls.pack(pady=20, side="top")
 
-        # Creamos la caja con scroll
-        # Le damos un ancho y un alto relativo al contenedor
         self.scrollUrls = ctk.CTkScrollableFrame(
             self.contenido, 
             width=500, 
             height=250
         )
-        self.scrollUrls.pack(pady=10, fill="both", expand=True)
 
-        # Revisamos al informacion del json y la agregamos como botones al scroll
         for alias, url in logic.diccionario.items():
             btn = ctk.CTkButton(self.scrollUrls, text=alias, command=lambda n=alias: self.clickBoton(n), width=400)
-            btn.pack(pady=10, padx=15, fill = "x")
+            btn.pack(pady=10, padx=15, fill="x")
             self.botonesRutas[alias] = btn
 
-        # Si el usuario no tiene nada guardado mostramos el siguiente mensaje
         if len(logic.diccionario) == 0:
             self.noHayNadaUrls = ctk.CTkLabel(self.scrollUrls, text="⚔️ ¡No tienes ninguna Url guardada! ⚔️", font=("Arial", 12, "bold"))
             self.noHayNadaUrls.pack(pady=10)
 
-        # El contenedor base invisible PARA EL SCROLL HORIZONTAL
         self.contenedorOculto = ctk.CTkFrame(
             self.contenido,
             height=60,
-            fg_color="transparent" # Lo hace invisible en el fondo de la app
+            fg_color="transparent"
         )
-        self.contenedorOculto.pack(pady=5, fill="x")
-        self.contenedorOculto.pack_propagate(False) # Forzamos que mantenga su tamaño siempre
+        self.contenedorOculto.pack(side="bottom", fill="x", pady=5)
+        self.contenedorOculto.pack_propagate(False)
 
-        # El scroll horizontal (Nace oculto dentro del contenedor base)
         self.scrollHorizontalUrl = ctk.CTkScrollableFrame(
             self.contenedorOculto, 
             orientation="horizontal",
-            fg_color="#2b2b2b" # El color gris de barra de herramientas
+            fg_color="#2b2b2b"
         )
 
-        # 3. El Switch detonante (Se empaqueta abajo a la izquierda)
+        self.contenedorControles = ctk.CTkFrame(self.contenido, fg_color="transparent")
+        self.contenedorControles.pack(side="bottom", fill="x", pady=10)
+
         self.switchMultipleUrl = ctk.CTkSwitch(
-            self.contenido, 
+            self.contenedorControles, 
             text="Seleccion multiple",
             font=("Arial", 14),
             progress_color="#b58d3d",
             command=self.alternarModoMultiple
         )
-        self.switchMultipleUrl.pack(side="left", padx=(20, 10), pady=15)
+        self.switchMultipleUrl.pack(side="left", padx=10)
 
-
-        # Botón de lanzar (se acoplará AL LADO del switch abajo)
         self.btnLanzarMultiple = ctk.CTkButton(
-            self.contenido, # Su padre es self.contenido para ponerse al lado del switch
+            self.contenedorControles, 
             text="Lanzar rutas seleccionadas 🚀",
             font=("Arial", 14, "bold"),
             fg_color="#2c6e49",
@@ -205,6 +198,7 @@ class URLKnight(ctk.CTk):
             command=self.lanzarUrlsMultiples
         )
 
+        self.scrollUrls.pack(pady=10, fill="both", expand=True)
 
     def mostrarPantallaAgregarUrl(self):
         self.limpiarContenido() # Borramos lo que haya
@@ -303,20 +297,16 @@ class URLKnight(ctk.CTk):
 
     def alternarModoMultiple(self):
         if self.switchMultipleUrl.get() == 1:
-            # Mostramos la barra gris que rellena el espacio fantasma
             self.scrollHorizontalUrl.pack(fill="both", expand=True)
-            # Hacemos aparecer el botón verde inmediatamente a la derecha del switch
-            self.btnLanzarMultiple.pack(side="left", padx=10, pady=15)
+            
+            self.btnLanzarMultiple.pack(side="left", padx=20)
         else:
-            # Al apagar, el botón verde y la barra se ocultan
             self.scrollHorizontalUrl.pack_forget()
             self.btnLanzarMultiple.pack_forget()
             
-            # Destruimos todos los botones dinámicos que hayan quedado dentro del scroll horizontal
             for widget in self.scrollHorizontalUrl.winfo_children():
                 widget.destroy()
 
-            # Limpiamos la ráfaga lógica y restauramos los colores de los botones de arriba
             self.listaRutasSeleccionadas.clear()
             for btn in self.botonesRutas.values():
                 btn.configure(fg_color=ctk.ThemeManager.theme["CTkButton"]["fg_color"])
