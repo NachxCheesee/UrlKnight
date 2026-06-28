@@ -1,3 +1,14 @@
+# ==============================================================================
+# WORKFLOW: Release UrlKnight Exe
+# Propósito: Compila el código Python, lo empaqueta en un ejecutable de Windows 
+#            (.exe) y lo publica automáticamente como una Release de GitHub.
+# Disparador: Se activa al hacer 'push' de un tag que empiece con 'v' (ej. v1.0.0).
+# Salida: Archivo ZIP de UrlKnight listo para la descarga del usuario final.
+# Nota: El flujo prepara el entorno de Python de forma automática, utilizando el 
+#       archivo 'requirements.txt' como fuente única para instalar todas las 
+#       dependencias y librerías necesarias para el proyecto.  
+# ==============================================================================
+
 name: Release UrlKnight Exe
 
 on:

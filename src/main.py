@@ -12,15 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+
 # importamos la libreria de la interfaz grafica
 import customtkinter as ctk
 # el archivo .py de logic en el cual esta la logica para el guardado local
 import logic
-# libreria para dar mensajes profesionales
-from CTkMessagebox import CTkMessagebox
 # Utilizado para obtener rutas temporales
 import sys
 import os
+# Las diferentes ventanas que se muestran en CONTENIDO
+from views.UrlView import UrlView
+from views.AddView import AddView
+from views.DeleteView import DeleteView
+from views.GuideView import GuideView
 
 # Necesario para encontrar la ruta de los assets
 def rutaRecurso(relative_path):
@@ -29,7 +34,7 @@ def rutaRecurso(relative_path):
         # PyInstaller crea una carpeta temporal y guarda la ruta en _MEIPASS
         base_path = sys._MEIPASS
     except Exception:
-        # Si no estamos en un .exe, usamos la ruta normal
+        # Si no estamos en un .exe (Pruebas de codigo etc), usamos la ruta normal
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
@@ -47,7 +52,7 @@ class URLKnight(ctk.CTk):
         ancho_app = int(monitor_ancho * 0.50)
         alto_app = int(monitor_alto * 0.50)
         
-        # 2. Calculamos la posición para que quede centrada
+        # Calculamos la posición para que quede centrada
         x = int((self.winfo_screenwidth() / 2) - (ancho_app / 2))
         y = int((self.winfo_screenheight() / 2) - (alto_app / 2))
 
@@ -66,6 +71,9 @@ class URLKnight(ctk.CTk):
         ruta_icono = rutaRecurso("assets/UrlKnight.ico")
         self.iconbitmap(ruta_icono)
 
+        # Lo declaramos (necesario para las Views de CONTENIDO)
+        self.logic = logic
+        
         # ESTRUCTURA DE CELDAS (Grid)
         # Columna 0 (Menú) - No se estira
         self.grid_columnconfigure(0, weight=0)
@@ -77,10 +85,7 @@ class URLKnight(ctk.CTk):
         # CREACIÓN DE LOS CONTENEDORES
         self.contenedores()
         self.configuracionMenu()
-
-        # Creamos las listas a utilizar para la Selección Múltiple
-        self.listaRutasSeleccionadas = []
-        self.botonesRutas = {}
+        # Llamamos en seguida a la pantalla de Urls
         self.mostrarPantallaUrls()
 
     # --- CONFIGURACION CONTENEDORES --- 
@@ -93,10 +98,11 @@ class URLKnight(ctk.CTk):
         self.contenido = ctk.CTkFrame(self, fg_color="transparent")
         self.contenido.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
 
+
+    # --- FUNCION GLOBAL --- 
+
     def limpiarContenido(self):
-        # Nos aseguramos que la lista siempre este vacia de inicio 
-        self.listaRutasSeleccionadas.clear()
-        # Buscamos cada objeto en el frame contenido y lo sacamos
+        # Buscamos cada objeto en el frame CONTENIDO y lo BORRAMOS
         for widget in self.contenido.winfo_children():
             widget.destroy()
 
@@ -104,8 +110,6 @@ class URLKnight(ctk.CTk):
 
     def configuracionMenu(self):
 
-        # padx lado a lado 
-        # pady arriba y abajo
         self.tituloMenu = ctk.CTkLabel(self.menu_lateral, text="URL KNIGHT", font=("Arial", 20, "bold"))
         self.tituloMenu.pack(pady=30, padx=10)
 
@@ -143,288 +147,30 @@ class URLKnight(ctk.CTk):
     # --- CONFIGURACION PANTALLAS EN CONTENIDO ---
 
     def mostrarPantallaUrls(self):
+        # BORRAMOS el contenedor central como siempre
         self.limpiarContenido()
-        
-        self.tituloUrls = ctk.CTkLabel(self.contenido, text="⚔️ ELIGE TU DESTINO ⚔️", font=("Arial", 24, "bold"))
-        self.tituloUrls.pack(pady=20, side="top")
-
-        self.scrollUrls = ctk.CTkScrollableFrame(
-            self.contenido, 
-            width=500, 
-            height=250
-        )
-
-        for alias, url in logic.diccionario.items():
-            btn = ctk.CTkButton(self.scrollUrls, text=alias, command=lambda n=alias: self.clickBoton(n), width=400)
-            btn.pack(pady=10, padx=15, fill="x")
-            self.botonesRutas[alias] = btn
-
-        if len(logic.diccionario) == 0:
-            self.noHayNadaUrls = ctk.CTkLabel(self.scrollUrls, text="⚔️ ¡No tienes ninguna Url guardada! ⚔️", font=("Arial", 12, "bold"))
-            self.noHayNadaUrls.pack(pady=10)
-
-        self.contenedorOculto = ctk.CTkFrame(
-            self.contenido,
-            height=60,
-            fg_color="transparent"
-        )
-        self.contenedorOculto.pack(side="bottom", fill="x", pady=5)
-        self.contenedorOculto.pack_propagate(False)
-
-        self.scrollHorizontalUrl = ctk.CTkScrollableFrame(
-            self.contenedorOculto, 
-            orientation="horizontal",
-            fg_color="#2b2b2b"
-        )
-
-        self.contenedorControles = ctk.CTkFrame(self.contenido, fg_color="transparent")
-        self.contenedorControles.pack(side="bottom", fill="x", pady=10)
-
-        self.switchMultipleUrl = ctk.CTkSwitch(
-            self.contenedorControles, 
-            text="Seleccion multiple",
-            font=("Arial", 14),
-            progress_color="#b58d3d",
-            command=self.alternarModoMultiple
-        )
-        self.switchMultipleUrl.pack(side="left", padx=10)
-
-        self.btnLanzarMultiple = ctk.CTkButton(
-            self.contenedorControles, 
-            text="Lanzar rutas seleccionadas 🚀",
-            font=("Arial", 14, "bold"),
-            fg_color="#2c6e49",
-            hover_color="#4f9a69",
-            command=self.lanzarUrlsMultiples
-        )
-
-        self.scrollUrls.pack(pady=10, fill="both", expand=True)
+        # Instanciamos tu nueva clase externa pasándole self (este archivo main)
+        pantalla = UrlView(self.contenido, self)
+        # La empaquetamos para que ocupe todo el espacio central responsivo
+        pantalla.pack(fill="both", expand=True)
 
     def mostrarPantallaAgregarUrl(self):
-        self.limpiarContenido() # Borramos lo que haya
-        
-        self.tituloAgregar = ctk.CTkLabel(self.contenido, text="📜 AÑADIR URL 🛡️", font=("Arial", 24, "bold"))
-        self.tituloAgregar.pack(pady=20)
-
-
-        self.entradaAliasAgregar = ctk.CTkEntry(self.contenido, placeholder_text="Ingresa tu alias aqui...", width=400)
-        self.entradaAliasAgregar.pack(pady=10)
-
-        self.entradaUrlAgregar = ctk.CTkEntry(self.contenido, placeholder_text="Ingresa tu url aqui...", width=400)
-        self.entradaUrlAgregar.pack(pady=10)
-
-        self.btnAgregarUrlAgregar = ctk.CTkButton(
-            self.contenido, 
-            text="Agregar Url",
-            width=200,
-            command=self.agregarUrl
-        )
-        self.btnAgregarUrlAgregar.pack(pady=10, padx=20)
+        self.limpiarContenido() 
+        pantalla = AddView(self.contenido, self)
+        pantalla.pack(fill="both", expand=True)
 
     def mostrarPantallaEliminarUrl(self):
         self.limpiarContenido() # Borramos lo que haya
-        
-        self.tituloEliminar = ctk.CTkLabel(self.contenido, text="❌ ELIMINAR URL ❌", font=("Arial", 24, "bold"))
-        self.tituloEliminar.pack(pady=20)
-
-
-        self.entradaAliasEliminar = ctk.CTkEntry(self.contenido, placeholder_text="Ingresa tu alias aqui...", width=400)
-        self.entradaAliasEliminar.pack(pady=10)
-
-        self.btnEliminarUrlEliminar = ctk.CTkButton(
-            self.contenido, 
-            text="Eliminar Url",
-            width=200,
-            command=self.eliminarUrl
-        )
-        self.btnEliminarUrlEliminar.pack(pady=10, padx=20)
+        pantalla = DeleteView(self.contenido, self)
+        pantalla.pack(fill="both", expand=True)
 
     def mostrarPantallaGuiaPortabilidad(self):
         self.limpiarContenido() # Borramos lo que haya
-        
-        self.tituloGuia = ctk.CTkLabel(self.contenido, text="📜 GUIA DE PORTABILIDAD 📜", font=("Arial", 24, "bold"))
-        self.tituloGuia.pack(pady=20)
-
-        # 1. Creamos el CTkTextbox
-        # wrap="word" es para que el texto no se corte a la mitad de una palabra
-        self.textoGuia = ctk.CTkTextbox(
-            self.contenido, 
-            font=("Segoe UI", 14),
-            wrap="word",
-            border_width=2,
-            fg_color="#2b2b2b",
-            text_color="#dce4ee"
-        )
-        
-        # 'fill="both"' y 'expand=True' hacen que el cuadro crezca con la ventana
-        self.textoGuia.pack(padx=10, pady=10, fill="both", expand=True)
-
-        # El contenido de tu guía
-        contenidoGuia = (
-            "Guía del Caballero Nómada: Cómo llevar tu información a todos lados\n\n"
-            "¡Felicidades! Tienes en tus manos una herramienta diseñada para la libertad. "
-            "UrlKnight no necesita instalación, pero para que tus datos viajen seguros contigo, "
-            "sigue estas reglas de honor:\n\n"
-            "1. EL COFRE DEL TESORO (LA CARPETA)\n"
-            "Aunque el programa es un solo archivo .exe, este genera su propia \"bóveda\" "
-            "de datos llamada UrlKnightData.json. Regla de Oro: Mantén siempre el archivo .exe "
-            "y el .json en la misma carpeta.\n\n"
-            "2. CÓMO MOVER TUS DATOS A UN PENDRIVE \n"
-            "Si vas a usar el Knight en la universidad o en el trabajo:\n"
-            "- Copia la carpeta completa de UrlKnight a tu pendrive.\n"
-            "- Al llegar al otro PC, abre la carpeta y ejecuta el UrlKnight.exe.\n"
-            "- ¡Listo! Verás todos tus links tal cual los dejaste en casa.\n\n"
-            "3. PREGUNTAS FRECUENTES DEL VIAJERO \n\n"
-            "* ¿Puedo crear un acceso directo?\n"
-            "Sí, pero hazlo desde el pendrive. No muevas el .exe solo al escritorio del otro PC "
-            "o no encontrará tus links.\n\n"
-            "* ¿Perdí mis links?\n"
-            "Revisa que el archivo UrlKnightData.json esté al lado del programa. Si lo borras, "
-            "el Knight empezará de cero.\n\n"
-            "* ¿Cómo hago un respaldo?\n"
-            "Solo haz una copia del archivo UrlKnightData.json en tu correo o nube. "
-            "¡Ahí está toda tu configuración!"
-        )
-
-        # Insertamos el texto
-        self.textoGuia.insert("0.0", contenidoGuia)
-
-        # Hacemos que sea de solo lectura para el usuario
-        self.textoGuia.configure(state="disabled")
-
-
-    # --- FUNCIONES DE LOS BOTONES ---
-
-    def alternarModoMultiple(self):
-        if self.switchMultipleUrl.get() == 1:
-            self.scrollHorizontalUrl.pack(fill="both", expand=True)
-            
-            self.btnLanzarMultiple.pack(side="left", padx=20)
-        else:
-            self.scrollHorizontalUrl.pack_forget()
-            self.btnLanzarMultiple.pack_forget()
-            
-            for widget in self.scrollHorizontalUrl.winfo_children():
-                widget.destroy()
-
-            self.listaRutasSeleccionadas.clear()
-            for btn in self.botonesRutas.values():
-                btn.configure(fg_color=ctk.ThemeManager.theme["CTkButton"]["fg_color"])
-
-    def lanzarUrlsMultiples(self):
-        if not self.listaRutasSeleccionadas:
-            CTkMessagebox(title="Aviso", message="¡No has seleccionado ninguna ruta, caballero!", icon="warning")
-            return
-        
-        # Abre todas las URLs seleccionadas en un bucle
-        for alias in self.listaRutasSeleccionadas:
-            logic.abrirUrl(alias)
-            
-        # Apaga el modo automáticamente al terminar el lanzamiento
-        self.switchMultipleUrl.deselect()
-        self.alternarModoMultiple()
-
-    def quitarRutaEspecifica(self, boton_badge, alias):
-        # 1. LOGICA: Sacamos solo UNA instancia de ese alias de la lista
-        if alias in self.listaRutasSeleccionadas:
-            self.listaRutasSeleccionadas.remove(alias)
-            
-        # 2. DINÁMICO: Destruimos físicamente ese botón de la barra horizontal
-        boton_badge.destroy()
-        
-        # 3. DISEÑO: Si ya no quedan más copias de ese alias en la lista, devolvemos el botón de arriba a su color normal
-        if alias not in self.listaRutasSeleccionadas:
-            self.botonesRutas[alias].configure(fg_color=ctk.ThemeManager.theme["CTkButton"]["fg_color"])
-
-
-    def clickBoton(self, nombre):
-        if self.switchMultipleUrl.get() == 1:
-            # LOGICA: Permite duplicados agregando directo a la lista
-            self.listaRutasSeleccionadas.append(nombre)
-            
-            # DISEÑO: Cambia el botón a color dorado de selección
-            self.botonesRutas[nombre].configure(fg_color="#b58d3d")
-            
-            # DINÁMICO: Crea la insignia en el scroll horizontal
-            btn_badge = ctk.CTkButton(
-                self.scrollHorizontalUrl,
-                text=f" 🔗 {nombre}  ✕ ",
-                font=("Arial", 12, "bold"),
-                fg_color="#3a3a3a",
-                hover_color="#551a1a",
-                width=80,
-                height=25,
-                corner_radius=6
-            )
-            btn_badge.configure(command=lambda b=btn_badge, a=nombre: self.quitarRutaEspecifica(b, a))
-            btn_badge.pack(side="left", padx=5, pady=10)
-        else:
-            # Abrimos la Url de manera normal
-            logic.abrirUrl(nombre)
-
-    def agregarUrl(self):
-        alias = self.entradaAliasAgregar.get()
-        url = self.entradaUrlAgregar.get()
-        
-        # Realizamos las verificaciones antes de llamar a logic
-        if not alias.strip() or not url.strip():
-            self.mostrarCamposObligatorios()
-        elif alias in logic.diccionario:
-            self.mostrarAliasExiste()
-        elif alias.startswith(("http://", "https://")):
-            self.mostrarAliasInvalido()
-        elif not url.startswith(("http://", "https://")):
-            self.mostrarUrlInvalida()
-        else:
-            self.mostrarGuardadoExitoso()
-            logic.agregarUrl(alias, url)
-        
-        # Limpiamos los campos de texto
-        self.entradaAliasAgregar.delete(0, 'end')
-        self.entradaUrlAgregar.delete(0, 'end')
-
-
-    def eliminarUrl(self):
-        alias = self.entradaAliasEliminar.get()
-
-        # Realizamos las verificaciones antes de llamar a logic
-        if not alias.strip():
-            self.mostrarCamposObligatorios()
-        elif alias in logic.diccionario:
-            logic.eliminarUrl(alias)
-            self.mostrarBorradoExitoso()
-        else:
-            self.mostrarAliasNotFound()
-
-
-        self.entradaAliasEliminar.delete(0, 'end')
-
-    # --- MENSAJES DE WINDOWS ---
-
-    def mostrarAliasInvalido(self):
-        CTkMessagebox(title="Error", message="¡Alias invalido! Asegúrate de que NO empiece con http:// o https://", icon="cancel")
-
-    def mostrarGuardadoExitoso(self):
-        CTkMessagebox(title="Éxito", message="¡URL guardada correctamente!", icon="check")
-
-    def mostrarUrlInvalida(self):
-        CTkMessagebox(title="Error", message="¡Url invalido! Asegúrate de que empiece con http:// o https://", icon="cancel")
-    
-    def mostrarBorradoExitoso(self):
-        CTkMessagebox(title="Éxito", message="¡URL borrada correctamente!", icon="check")
-
-    def mostrarCamposObligatorios(self):
-
-        CTkMessagebox(title="Error", message="¡Todos los campos son obligatorios!", icon="cancel")
-
-    def mostrarAliasNotFound(self):
-        CTkMessagebox(title="Error", message="¡Alias no encontrado!", icon="cancel")
-    
-    def mostrarAliasExiste(self):
-        CTkMessagebox(title="Error", message="¡Ya existe un Alias con ese nombre!", icon="cancel")
-
+        pantalla = GuideView(self.contenido, self)
+        pantalla.pack(fill="both", expand=True)
 
 if __name__ == "__main__":
+    # Apenas se inicie la app
 
     logic.inicio() # llamamos a logic para que cree el archivo de guardado json
 
@@ -436,4 +182,4 @@ if __name__ == "__main__":
         pass
 
     app = URLKnight() # Creamos la instancia de nuestra clase
-    app.mainloop()    # Iniciamos el corazón de la app
+    app.mainloop()    # Iniciamos el bucle de la app
