@@ -11,9 +11,9 @@ Un administrador de URLs ligero, portable y diseñado para la productividad sin 
 
 ## 📝 Descripción
 
-**UrlKnight** es una aplicación de escritorio diseñada para centralizar tus accesos directos de forma eficiente. A diferencia de los marcadores tradicionales, este caballero está pensado para la **movilidad**: puedes llevarlo en un pendrive y usarlo en cualquier estación de trabajo (universidad, oficina o casa) sin dejar rastro en el sistema operativo local.
+**UrlKnight** es una aplicación de escritorio portátil de alto rendimiento diseñada para centralizar, organizar y proteger tus accesos directos de forma eficiente. A diferencia de los marcadores tradicionales, este caballero está pensado para la **movilidad y la privacidad**: puedes llevarlo en un pendrive y usarlo en cualquier estación de trabajo sin dejar rastro, manteniendo tus datos seguros de miradas indiscretas gracias a su motor de encriptación local.
 
-Desarrollada con **CustomTkinter**, garantiza una interfaz moderna y una persistencia de datos inteligente que acompaña siempre al ejecutable.
+Desarrollada con **CustomTkinter** y estructurada bajo arquitectura modular, garantiza una interfaz moderna con organización por categorías, búsqueda global inteligente y persistencia cifrada.
 
 ---
 
@@ -23,10 +23,12 @@ Desarrollada con **CustomTkinter**, garantiza una interfaz moderna y una persist
 
 ## 🚀 Características Principales
 
-* **🛡️ Portabilidad Total:** Olvídate de carpetas ocultas en `%AppData%`. El Knight guarda sus datos exactamente donde tú lo pongas.
-* **💾 Persistencia Automática:** Gestión de archivos JSON dinámica mediante `sys.executable`, asegurando que tus links viajen contigo.
-* **⚡ Experiencia Profesional:** Splash Screen de carga y mensajes de sistema estilizados con `CTkMessagebox`.
-* **📖 Guía Integrada:** Incluye un manual de usuario dentro de la app para asegurar el correcto manejo de la "Bóveda de Datos".
+* **🛡️ Portabilidad y Privacidad (Base64):** Tus enlaces ya no se guardan en texto plano. La app ofusca automáticamente la base de datos local utilizando Base64 para proteger tu privacidad sin añadir dependencias pesadas.
+* **📁 Organización por Categorías:** Clasifica tus enlaces de forma jerárquica. Crea, elimina y organiza marcadores de manera ordenada en carpetas lógicas.
+* **🔍 Búsqueda Global en Tiempo Real:** Filtra al instante tus enlaces escribiendo en su barra de búsqueda. El radar analiza todo el archivo de manera global sin importar la categoría activa.
+* **⚙️ Editor de Destinos Inteligente:** Modifica fácilmente el alias, la dirección URL o traslada un enlace de una categoría a otra de forma segura y sin dejar enlaces huérfanos.
+* **💾 Persistencia con Migración Automática:** Si tienes una base de datos antigua (V2), el Knight la detecta en el primer inicio, la estructura en categorías y la encripta automáticamente sin perder un solo enlace.
+* **🛸 Interfaz Refinada (UX):** Ventanas emergentes de confirmación que se calculan dinámicamente para aparecer centradas sobre la app y optimización de memoria mediante la destrucción y construcción dinámica de vistas.
 
 ---
 
@@ -35,6 +37,7 @@ Desarrollada con **CustomTkinter**, garantiza una interfaz moderna y una persist
 * **Lenguaje:** [Python 3.13.2](https://www.python.org/)
 * **GUI:** [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) (Interfaz moderna y responsive).
 * **Gestión de Datos:** Librería `json` para persistencia local.
+* **Seguridad:** Librería estándar `base64` para la ofuscación de datos en disco.
 * **Arquitectura de Rutas:** `sys` y `os` para garantizar la independencia de la unidad de almacenamiento.
 * **Navegación:** `webbrowser` para integración directa con el navegador predeterminado.
 * **Distribución:** `PyInstaller` para empaquetado en un ejecutable único.
@@ -44,7 +47,7 @@ Desarrollada con **CustomTkinter**, garantiza una interfaz moderna y una persist
 ## 🛡️ Guía de Portabilidad
 
 Para que tus datos estén siempre seguros, recuerda estas reglas:
-1. **La Bóveda:** El archivo `UrlKnightData.json` es la memoria de la app. Debe estar siempre en la **misma carpeta** que `UrlKnight.exe`.
+1. **La Bóveda:** El archivo `UrlKnightData.json` es la memoria encriptada de la app. Debe estar siempre en la **misma carpeta** que `UrlKnight.exe`.
 2. **El Viaje:** Si cambias de PC, mueve la **carpeta completa**.
 3. **Respaldo:** Puedes copiar el archivo `.json` a tu nube favorita para tener un backup instantáneo de todos tus enlaces.
 
