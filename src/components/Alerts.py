@@ -31,5 +31,19 @@ def mostrarAliasExiste():
 def mostrarUrlMultipleNo():
     CTkMessagebox(title="Aviso", message="¡No has seleccionado ninguna ruta, caballero!", icon="warning")
 
+def mostrarCategoriaExiste():
+    CTkMessagebox(title="Error", message="¡Esta categoria ya existe!", icon="cancel")
+
+def mostrarCategoriaCreada():
+    CTkMessagebox(title="Éxito", message="¡Categoria creada con exito!", icon="check")
+
+def mostrarEliminadoExitosoCategoria():
+    CTkMessagebox(title="Éxito", message="¡Categoria eliminada con exito!", icon="check")
+
+def mostrarErrorProceso():
+    # Añadida para dar soporte a fallos lógicos inesperados en el backend
+    CTkMessagebox(title="Error", message="¡Ha ocurrido un error inesperado al procesar la solicitud!", icon="cancel")
+
+
 if __name__ == "__main__":
     pass

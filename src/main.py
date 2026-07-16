@@ -26,6 +26,11 @@ from views.UrlView import UrlView
 from views.AddView import AddView
 from views.DeleteView import DeleteView
 from views.GuideView import GuideView
+from views.AddCategoryView import AddCategoryView
+from views.DeleteCategoryView import DeleteCategoryView
+from views.ModifyUrlView import ModifyUrlView
+
+
 
 # Necesario para encontrar la ruta de los assets
 def rutaRecurso(relative_path):
@@ -137,6 +142,28 @@ class URLKnight(ctk.CTk):
         )
         self.btnEliminarMenu.pack(pady=10, padx=20, fill="x")
 
+        self.btnModificarUrl = ctk.CTkButton(
+            self.menu_lateral, 
+            text="Modificar Url", 
+            command=self.mostrarPantallaModificarUrl
+        )
+        self.btnModificarUrl.pack(pady=10, padx=20, fill="x")
+
+
+        self.btnAgregarCategoria = ctk.CTkButton(
+            self.menu_lateral, 
+            text="Agregar Categoria", 
+            command=self.mostrarPantallaAgregarCategoria
+        )
+        self.btnAgregarCategoria.pack(pady=10, padx=20, fill="x")
+
+        self.btnEliminarCategoria = ctk.CTkButton(
+            self.menu_lateral, 
+            text="Eliminar Categoria", 
+            command=self.mostrarPantallaEliminarCategoria
+        )
+        self.btnEliminarCategoria.pack(pady=10, padx=20, fill="x")
+
         self.btnPortabilidadMenu = ctk.CTkButton(
             self.menu_lateral, 
             text="Guia de Portabilidad", 
@@ -167,6 +194,21 @@ class URLKnight(ctk.CTk):
     def mostrarPantallaGuiaPortabilidad(self):
         self.limpiarContenido() # Borramos lo que haya
         pantalla = GuideView(self.contenido, self)
+        pantalla.pack(fill="both", expand=True)
+
+    def mostrarPantallaAgregarCategoria(self):
+        self.limpiarContenido()
+        pantalla = AddCategoryView(self.contenido, self)
+        pantalla.pack(fill="both", expand=True)
+
+    def mostrarPantallaEliminarCategoria(self):
+        self.limpiarContenido()
+        pantalla = DeleteCategoryView(self.contenido, self)
+        pantalla.pack(fill="both", expand=True)
+
+    def mostrarPantallaModificarUrl(self):
+        self.limpiarContenido()
+        pantalla = ModifyUrlView(self.contenido, self)
         pantalla.pack(fill="both", expand=True)
 
 if __name__ == "__main__":
